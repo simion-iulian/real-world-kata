@@ -45,10 +45,22 @@ public class UserControllerShould {
         assertThat(actual, is(jsonStringFor(USER)));
     }
 
+    @Test
+    public void
+    return_404_response_type_when_user_not_found() {
+        given(request.params(":id")).willReturn("12");
+        given(userRepository.getBy(12)).willReturn(Optional.empty());
+
+        String actual = userController.getById(request, this.response);
+
+        verify(response).status(404);
+        assertThat(actual, is(""));
+    }
+
     private String jsonStringFor(User user) {
         return new JsonObject()
-                .add("id", user.id())
-                .add("name", user.name())
-                .toString();
+            .add("id", user.id())
+            .add("name", user.name())
+            .toString();
     }
 }

@@ -30,4 +30,9 @@ public class AT_GetUserById {
                 .body("id", is(1))
                 .body("name", is("sam"));
     }
+    @Test
+    public void return_404_and_user_not_found_for_specified_id() {
+        get("/users/12").then()
+          .statusCode(404);
+    }
 }

@@ -6,6 +6,8 @@ import spark.Response;
 import upsd.domain.User;
 import upsd.repositories.UserRepository;
 
+import java.util.Optional;
+
 public class UserController {
 
     private final UserRepository userRepository;
@@ -15,13 +17,20 @@ public class UserController {
     }
 
     public String getById(Request req, Response res) {
-        int id = Integer.parseInt(req.params(":id"));
+        int id =Integer.parseInt(req.params(":id"));
 
-        User userFound = userRepository.getBy(id).get();
+        final Optional<User> idOptional = userRepository.getBy(id);
 
-        res.type("application/json");
+        if(idOptional.isPresent()){
+            User userFound = idOptional.get();
+            res.type("application/json");
+            return jsonStringFor(userFound);
+        } else {
+            res.status(404);
+            return "";
+        }
 
-        return jsonStringFor(userFound);
+
     }
 
     private String jsonStringFor(User user) {
