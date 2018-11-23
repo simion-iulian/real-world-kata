@@ -23,4 +23,8 @@ public class UserRepository {
                 .filter(u -> u.id() == id)
                 .findFirst();
     }
+
+    public String getAll() {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -63,4 +63,25 @@ public class UserControllerShould {
             .add("name", user.name())
             .toString();
     }
+    private String jsonStringForMultipleUsers(User... users) {
+        return null;
+    }
+
+    @Test
+    public void
+    return_200_and_all_users() {
+        User user1 = new User(1, "sam");
+        User user2 = new User(2, "simion");
+        User user3 = new User(3, "solange");
+        User user4 = new User(4, "scott");
+        User user5 = new User(5, "andre");
+
+        String jsonForAllUsers = jsonStringForMultipleUsers(user1, user2, user3, user4, user5);
+        given(userRepository.getAll()).willReturn(jsonForAllUsers);
+
+        String actual = userController.getAll(request, response);
+
+        verify(response).status(200);
+        assertThat(actual, is(jsonForAllUsers));
+    }
 }

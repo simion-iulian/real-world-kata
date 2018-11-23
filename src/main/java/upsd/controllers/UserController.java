@@ -9,15 +9,13 @@ import upsd.repositories.UserRepository;
 import java.util.Optional;
 
 public class UserController {
-
     private final UserRepository userRepository;
-
     public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     public String getById(Request req, Response res) {
-        int id =Integer.parseInt(req.params(":id"));
+        int id = Integer.parseInt(req.params(":id"));
 
         final Optional<User> idOptional = userRepository.getBy(id);
 
@@ -29,8 +27,6 @@ public class UserController {
             res.status(404);
             return "";
         }
-
-
     }
 
     private String jsonStringFor(User user) {
@@ -38,5 +34,9 @@ public class UserController {
                 .add("id", user.id())
                 .add("name", user.name())
                 .toString();
+    }
+
+    public String getAll(Request req, Response res) {
+        throw new UnsupportedOperationException();
     }
 }
