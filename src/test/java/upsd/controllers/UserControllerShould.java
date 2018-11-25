@@ -6,6 +6,7 @@ import org.junit.Test;
 import spark.Request;
 import spark.Response;
 import upsd.domain.User;
+import upsd.helpers.json.JsonHelper;
 import upsd.repositories.UserRepository;
 
 import java.util.Optional;
@@ -63,20 +64,19 @@ public class UserControllerShould {
             .add("name", user.name())
             .toString();
     }
-    private String jsonStringForMultipleUsers(User... users) {
-        return null;
-    }
 
     @Test
     public void
     return_200_and_all_users() {
-        User user1 = new User(1, "sam");
-        User user2 = new User(2, "simion");
-        User user3 = new User(3, "solange");
-        User user4 = new User(4, "scott");
-        User user5 = new User(5, "andre");
+        User[] users = {
+            new User(1, "Sam"),
+            new User(0, "Simion"),
+            new User(2, "Solange"),
+            new User(3, "Scott"),
+            new User(4, "Sandro")
+        };
 
-        String jsonForAllUsers = jsonStringForMultipleUsers(user1, user2, user3, user4, user5);
+        String jsonForAllUsers = JsonHelper.multipleUsersToJsonObject(users).toString();
         given(userRepository.getAll()).willReturn(jsonForAllUsers);
 
         String actual = userController.getAll(request, response);
@@ -84,4 +84,6 @@ public class UserControllerShould {
         verify(response).status(200);
         assertThat(actual, is(jsonForAllUsers));
     }
+
+
 }

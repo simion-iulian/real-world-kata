@@ -15,6 +15,6 @@ class Routes {
 
     void setup() {
         get("/users/:id", (req, res) -> userController.getById(req, res));
-        get("/users/all/", (req,res) -> userController.getAll(req, res));
+        get("/users", (req,res) -> userController.getAll(req, res));
     }
 }

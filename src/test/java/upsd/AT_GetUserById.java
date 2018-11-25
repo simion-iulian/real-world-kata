@@ -1,5 +1,6 @@
 package upsd;
 
+import com.eclipsesource.json.JsonObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import upsd.api.Server;
@@ -7,9 +8,9 @@ import upsd.domain.User;
 import upsd.repositories.UserRepository;
 
 import static io.restassured.RestAssured.get;
-import static io.restassured.RestAssured.when;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasItems;
+import static upsd.helpers.json.JsonHelper.multipleUsersToJsonObject;
 
 public class AT_GetUserById {
 
@@ -23,14 +24,14 @@ public class AT_GetUserById {
 
     @Test
     public void return_200_and_user_found_for_specified_id() {
-        userRepository.add(new User(1, "sam"));
+        userRepository.add(new User(1, "Sam"));
 
 
         get("/users/1").then()
                 .statusCode(200)
                 .contentType("application/json")
                 .body("id", is(1))
-                .body("name", is("sam"));
+                .body("name", is("Sam"));
     }
 
     @Test
@@ -38,17 +39,25 @@ public class AT_GetUserById {
         get("/users/12").then()
           .statusCode(404);
     }
+
     @Test
     public void return_200_and_all_users_id_and_names() {
-        userRepository.add(new User(1, "sam"));
-        userRepository.add(new User(2, "simion"));
-        userRepository.add(new User(3, "solange"));
-        userRepository.add(new User(4, "scott"));
-        userRepository.add(new User(5, "andre"));
+        User[] users = {
+            new User(1, "Sam"),
+            new User(0, "Simion"),
+            new User(2, "Solange"),
+            new User(3, "Scott"),
+            new User(4, "Sandro")
+        };
 
-        get("/users/all/").
+        for(User user: users)
+            userRepository.add(user);
+
+        JsonObject arrayOfUsers = multipleUsersToJsonObject(users);
+
+        get("/users").
             then().
             statusCode(200).
-            body("", hasItems("sam","simion","solange","scott","andre"));
+            body(is(arrayOfUsers.toString()));
     }
 }

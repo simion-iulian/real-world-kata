@@ -36,7 +36,9 @@ public class UserController {
                 .toString();
     }
 
+
     public String getAll(Request req, Response res) {
-        throw new UnsupportedOperationException();
+        res.status(200);
+        return userRepository.getAll();
     }
 }
