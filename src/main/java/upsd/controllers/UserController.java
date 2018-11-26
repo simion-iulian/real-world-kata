@@ -29,16 +29,20 @@ public class UserController {
         }
     }
 
-    private String jsonStringFor(User user) {
-        return new JsonObject()
-                .add("id", user.id())
-                .add("name", user.name())
-                .toString();
-    }
-
 
     public String getAll(Request req, Response res) {
         res.status(200);
         return userRepository.getAll();
+    }
+
+    private String jsonStringFor(User user) {
+        return new JsonObject()
+            .add("id", user.id())
+            .add("name", user.name())
+            .toString();
+    }
+
+    public void addUser(Request req, Response res) {
+        throw new UnsupportedOperationException();
     }
 }

@@ -15,6 +15,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 public class UserControllerShould {
@@ -83,6 +84,21 @@ public class UserControllerShould {
 
         verify(response).status(200);
         assertThat(actual, is(jsonForAllUsers));
+    }
+
+    @Test
+    public void
+    return_201_and_add_user() {
+        User user =new User(12, "Elliott");
+
+        given(request.body()).willReturn(jsonStringFor(user));
+
+        userController.addUser(request, response);
+
+        verify(response).status(201);
+        verify(userRepository).add(user);
+
+        assertThat(userRepository.getBy(12), is(user));
     }
 
 
