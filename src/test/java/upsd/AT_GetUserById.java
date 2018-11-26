@@ -5,9 +5,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import upsd.api.Server;
 import upsd.domain.User;
+import upsd.helpers.json.JsonHelper;
 import upsd.repositories.UserRepository;
 
 import static io.restassured.RestAssured.get;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasItems;
 import static upsd.helpers.json.JsonHelper.multipleUsersToJsonObject;
@@ -55,9 +58,27 @@ public class AT_GetUserById {
 
         JsonObject arrayOfUsers = multipleUsersToJsonObject(users);
 
+        System.out.println(arrayOfUsers.toString());
+
         get("/users").
             then().
             statusCode(200).
             body(is(arrayOfUsers.toString()));
+    }
+
+    @Test
+    public void
+    return_201_and_add_a_user() {
+        String jsonBody = JsonHelper.jsonObjectFor(new User(17, "Alex")).toString();
+
+        given()
+            .contentType("application/json")
+            .body(jsonBody)
+        .when()
+            .post("/users")
+        .then()
+            .statusCode(201)
+            .contentType("application/json")
+            .body("uri", equalTo("/users/17"));
     }
 }
