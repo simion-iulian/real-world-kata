@@ -20,5 +20,6 @@ class Routes {
         get("/users/:id", (req, res) -> userController.getById(req, res));
         get("/users", (req,res) -> userController.getAll(req, res));
         post("/users", (req, res) -> userController.addUser(req,res));
+        delete("/users", (req, res) -> userController.deleteUser(req,res));
     }
 }

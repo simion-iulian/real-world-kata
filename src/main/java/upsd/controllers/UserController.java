@@ -54,4 +54,8 @@ public class UserController {
         userRepository.add(user);
         return new JsonObject().add("uri", "/users/"+userId).toString();
     }
+
+    public String deleteUser(Request req, Response res) {
+        throw new UnsupportedOperationException();
+    }
 }

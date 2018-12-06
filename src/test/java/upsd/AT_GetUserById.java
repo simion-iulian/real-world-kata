@@ -64,16 +64,33 @@ public class AT_GetUserById {
     @Test
     public void
     return_201_and_add_a_user() {
-        String jsonBody = new UserJsonHelper().objectFor(new User(17, "Alex")).toString();
+        String userToAdd = new UserJsonHelper().objectFor(new User(17, "Alex")).toString();
 
         given()
             .contentType("application/json")
-            .body(jsonBody)
+            .body(userToAdd)
         .when()
             .post("/users")
         .then()
             .statusCode(201)
             .contentType("application/json")
             .body("uri", equalTo("/users/17"));
+    }
+
+    @Test
+    public void
+    return_200_and_delete_a_user() {
+        String userToDelete = new UserJsonHelper().objectFor(new User(26, "Erik")).toString();
+
+        given()
+            .contentType("application/json")
+            .body(userToDelete)
+        .when()
+        .delete("/users")
+        .then()
+            .statusCode(200)
+            .contentType("application/json")
+            .body("uri", equalTo("/users/26"));
+
     }
 }

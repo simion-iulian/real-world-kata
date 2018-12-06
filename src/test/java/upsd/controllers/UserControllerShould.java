@@ -100,4 +100,22 @@ public class UserControllerShould {
         Optional<User> actual = userRepository.getBy(12);
         assertThat(actual, is(Optional.of(user)));
     }
+
+    @Test
+    public void
+    return_200_and_delete_user() {
+        int lukeId = 35;
+        User luke = new User(lukeId, "Luke");
+
+        given(request.body()).willReturn(jsonStringFor(luke));
+        given(userRepository.getBy(lukeId)).willReturn(Optional.of(luke));
+
+        userController.deleteUser(request,response);
+
+        verify(response).status(200);
+        verify(userRepository).delete(luke);
+
+        Optional<User> actual = userRepository.getBy(lukeId);
+        assertThat(actual, is (Optional.empty()));
+    }
 }
