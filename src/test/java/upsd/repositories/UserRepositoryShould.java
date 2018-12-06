@@ -5,6 +5,7 @@ import upsd.domain.User;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -43,5 +44,19 @@ public class UserRepositoryShould {
         List<User> allUsers = userRepository.getAll();
 
         assertThat(allUsers, is(users));
+    }
+
+    @Test
+    public void
+    delete_user() {
+        UserRepository userRepository = new UserRepository();
+        int id = 87;
+        User user = new User(id, "Vasile");
+
+        userRepository.add(user);
+        userRepository.delete(user);
+
+        Optional<User> userFound = userRepository.getBy(id);
+        assertThat(userFound, is(Optional.empty()));
     }
 }

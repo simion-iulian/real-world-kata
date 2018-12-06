@@ -29,6 +29,6 @@ public class UserRepository {
     }
 
     public void delete(User user) {
-        throw new UnsupportedOperationException();
+        users.remove(user);
     }
 }
