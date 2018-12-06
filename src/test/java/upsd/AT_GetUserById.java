@@ -1,6 +1,7 @@
 package upsd;
 
 import com.eclipsesource.json.JsonObject;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import upsd.api.Server;
@@ -13,7 +14,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasItems;
-import static upsd.helpers.json.JsonHelper.multipleUsersToJsonObject;
+import static upsd.helpers.json.JsonHelper.arrayOfUsers;
 
 public class AT_GetUserById {
 
@@ -25,10 +26,10 @@ public class AT_GetUserById {
         new Server(userRepository).startOn(8080);
     }
 
+
     @Test
     public void return_200_and_user_found_for_specified_id() {
         userRepository.add(new User(1, "Sam"));
-
 
         get("/users/1").then()
                 .statusCode(200)
@@ -56,7 +57,7 @@ public class AT_GetUserById {
         for(User user: users)
             userRepository.add(user);
 
-        JsonObject arrayOfUsers = multipleUsersToJsonObject(users);
+        JsonObject arrayOfUsers = arrayOfUsers(users);
 
         System.out.println(arrayOfUsers.toString());
 

@@ -1,15 +1,16 @@
 package upsd.helpers.json;
 
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import upsd.domain.User;
 
 public class JsonHelper {
-    public static JsonObject multipleUsersToJsonObject(User... users){
-        JsonObject arrayOfObjects = new JsonObject();
+    public static JsonObject arrayOfUsers(User... users){
+        JsonArray usersArray = new JsonArray();
         for (int i = 0; i < users.length; i++) {
-            arrayOfObjects.add("user"+i, jsonObjectFor(users[i]));
+            usersArray.add(jsonObjectFor(users[i]));
         }
-        return arrayOfObjects;
+        return new JsonObject().add("users",usersArray);
     }
 
     public static JsonObject jsonObjectFor(User user) {

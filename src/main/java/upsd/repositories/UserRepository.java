@@ -1,6 +1,5 @@
 package upsd.repositories;
 
-import com.eclipsesource.json.JsonObject;
 import upsd.domain.User;
 
 import java.util.ArrayList;
@@ -25,21 +24,8 @@ public class UserRepository {
                 .findFirst();
     }
 
-    public String getAll() {
-        return multipleUsersToJsonObject(users).toString();
+    public List<User> getAll() {
+        return users;
     }
 
-    private JsonObject multipleUsersToJsonObject(List<User> users){
-        JsonObject arrayOfObjects = new JsonObject();
-        for (int i = 0; i < users.size(); i++) {
-            arrayOfObjects.add("user"+i, jsonObjectFor(users.get(i)));
-        }
-        return arrayOfObjects;
-    }
-
-    private JsonObject jsonObjectFor(User user) {
-        return new JsonObject()
-            .add("id", user.id())
-            .add("name", user.name());
-    }
 }

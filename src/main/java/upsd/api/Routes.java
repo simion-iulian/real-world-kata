@@ -1,9 +1,12 @@
 package upsd.api;
 
+import spark.Spark;
 import upsd.controllers.UserController;
 import upsd.repositories.UserRepository;
 
+import static spark.Spark.*;
 import static spark.Spark.get;
+import static spark.route.HttpMethod.post;
 
 class Routes {
 
@@ -16,5 +19,6 @@ class Routes {
     void setup() {
         get("/users/:id", (req, res) -> userController.getById(req, res));
         get("/users", (req,res) -> userController.getAll(req, res));
+        post("/users", (req, res) -> userController.addUser(req,res));
     }
 }
