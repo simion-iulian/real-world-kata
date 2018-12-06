@@ -37,10 +37,10 @@ public class UserControllerShould {
     @Test
     public void
     return_404_response_type_when_user_not_found() {
-        given(request.params(":id")).willReturn("12");
+        given(request.params(":params")).willReturn("12");
         given(userRepository.getById(12)).willReturn(Optional.empty());
 
-        String actual = userController.getById(request, this.response);
+        String actual = userController.getBy(request, this.response);
 
         verify(response).status(404);
         assertThat(actual, is(""));
@@ -76,21 +76,22 @@ public class UserControllerShould {
 
     @Test
     public void return_user_for_supplied_id() {
-        given(request.params(":id")).willReturn("1");
+        given(request.params(":params")).willReturn("1");
         given(userRepository.getById(1)).willReturn(Optional.of(USER));
 
         String actual = userController.getBy(request, this.response);
 
         verify(response).type("application/json");
+
         assertThat(actual, is(jsonStringFor(USER)));
     }
     @Test
     public void return_user_for_supplied_name() {
-        given(request.params(":name")).willReturn(USER.name());
+        given(request.params(":params")).willReturn(USER.name());
 
         given(userRepository.getByName(USER.name())).willReturn(Optional.of(USER));
 
-        String actual = userController.getByName(request, this.response);
+        String actual = userController.getBy(request, this.response);
 
         verify(response).type("application/json");
         assertThat(actual, is(jsonStringFor(USER)));
