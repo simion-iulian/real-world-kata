@@ -56,17 +56,46 @@ public class UserController {
     public String getByName(Request req, Response res) {
         String name = req.params(":name");
         Optional<User> user = userRepository.getByName(name);
-        return user.isPresent()
-            ? userJson(res, user.get())
-            : emptyWith404(res);
+        return user
+            .map(u -> userJson(res, u))
+            .orElseGet(() -> emptyWith404(res));
+    }
+
+    public boolean isNumeric(String str)
+    {
+        for (char c : str.toCharArray())
+        {
+            if (!Character.isDigit(c)) return false;
+        }
+        return true;
     }
 
     public String getById(Request req, Response res) {
-        int id = Integer.parseInt(req.params(":id"));
-        Optional<User> user = userRepository.getById(id);
-        return user.isPresent()
-            ? userJson(res, user.get())
-            : emptyWith404(res);
+        String params = req.params(":id");
+
+        Optional<User> user = Optional.empty();
+
+        if(isNumeric(params))
+            user = userRepository.getById(Integer.parseInt(params));
+
+        return user
+            .map(u -> userJson(res, u))
+            .orElseGet(() -> emptyWith404(res));
+    }
+
+    public String getBy(Request req, Response res) {
+        String params = req.params(":id");
+
+        Optional<User> user;
+
+        if(isNumeric(params))
+            user = userRepository.getById(Integer.parseInt(params));
+        else
+            user = userRepository.getByName(params);
+
+        return user
+            .map(u -> userJson(res, u))
+            .orElseGet(() -> emptyWith404(res));
     }
 
     private String emptyWith404(Response res) {

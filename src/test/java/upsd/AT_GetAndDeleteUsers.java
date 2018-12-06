@@ -38,7 +38,7 @@ public class AT_GetAndDeleteUsers {
         User sandro = new User(4, "Sandro");
         userRepository.add(sandro);
 
-        get("/users/name/"+sandro.name())
+        get("/users/"+sandro.name())
             .then()
                 .statusCode(200)
                 .contentType(APPLICATION_JSON)

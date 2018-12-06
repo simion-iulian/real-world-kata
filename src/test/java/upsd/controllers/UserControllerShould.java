@@ -79,7 +79,7 @@ public class UserControllerShould {
         given(request.params(":id")).willReturn("1");
         given(userRepository.getById(1)).willReturn(Optional.of(USER));
 
-        String actual = userController.getById(request, this.response);
+        String actual = userController.getBy(request, this.response);
 
         verify(response).type("application/json");
         assertThat(actual, is(jsonStringFor(USER)));

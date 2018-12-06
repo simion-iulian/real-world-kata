@@ -15,8 +15,7 @@ class Routes {
     }
 
     void setup() {
-        get("/users/name/:name", (req, res) -> userController.getByName(req, res));
-        get("/users/:id", (req, res) -> userController.getById(req, res));
+        get("/users/:id", (req, res) -> userController.getBy(req, res));
         get("/users", (req,res) -> userController.getAll(req, res));
         post("/users", (req, res) -> userController.addUser(req,res));
         delete("/users", (req, res) -> userController.deleteUserById(req,res));

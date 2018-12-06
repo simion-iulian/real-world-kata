@@ -34,7 +34,7 @@ public class UserRepository {
     }
 
     public Optional<User> getByName(String name) {
-        Predicate<User> byName = u -> name.equals(u.name());
+        Predicate<User> byName = u -> u.name().equals(name);
         return firstUser(byName);
     }
 
