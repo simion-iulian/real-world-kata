@@ -23,7 +23,7 @@ public class UserControllerShould {
     private Request request;
     private Response response;
     private UserController userController;
-    private final User USER = new User(1, "bob");
+    private final User USER = new User("1", "bob");
     private UserRepository userRepository;
 
     @Before
@@ -38,7 +38,7 @@ public class UserControllerShould {
     public void
     return_404_response_type_when_user_not_found() {
         given(request.params(":params")).willReturn("12");
-        given(userRepository.getById(12)).willReturn(Optional.empty());
+        given(userRepository.getById("12")).willReturn(Optional.empty());
 
         String actual = userController.getBy(request, this.response);
 
@@ -57,11 +57,11 @@ public class UserControllerShould {
     public void
     return_200_and_all_users() {
         User[] users = {
-            new User(1, "Sam"),
-            new User(0, "Simion"),
-            new User(2, "Solange"),
-            new User(3, "Scott"),
-            new User(4, "Sandro")
+            new User("1", "Sam"),
+            new User("0", "Simion"),
+            new User("2", "Solange"),
+            new User("3", "Scott"),
+            new User("4", "Sandro")
         };
 
         String jsonForAllUsers = new UserJsonHelper().arrayFrom(Arrays.asList(users)).toString();
@@ -77,7 +77,7 @@ public class UserControllerShould {
     @Test
     public void return_user_for_supplied_id() {
         given(request.params(":params")).willReturn("1");
-        given(userRepository.getById(1)).willReturn(Optional.of(USER));
+        given(userRepository.getById("1")).willReturn(Optional.of(USER));
 
         String actual = userController.getBy(request, this.response);
 
@@ -100,24 +100,24 @@ public class UserControllerShould {
     @Test
     public void
     return_201_and_add_user() {
-        User user =new User(12, "Elliott");
+        User user =new User("12", "Elliott");
 
         given(request.body()).willReturn(jsonStringFor(user));
-        given(userRepository.getById(12)).willReturn(Optional.of(user));
+        given(userRepository.getById("12")).willReturn(Optional.of(user));
 
         userController.addUser(request, response);
 
         verify(response).status(201);
         verify(userRepository).add(user);
 
-        Optional<User> actual = userRepository.getById(12);
+        Optional<User> actual = userRepository.getById("12");
         assertThat(actual, is(Optional.of(user)));
     }
 
     @Test
     public void
     return_200_and_delete_user() {
-        int lukeId = 35;
+        String lukeId = "35";
         User luke = new User(lukeId, "Luke");
 
         given(request.body()).willReturn(jsonStringFor(luke));

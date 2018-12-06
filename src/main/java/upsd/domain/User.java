@@ -4,16 +4,16 @@ import java.util.Objects;
 
 public class User {
 
-    private final int id;
+    private final String id;
     private final String name;
 
-    public User(int id, String name) {
+    public User(String id, String name) {
 
         this.id = id;
         this.name = name;
     }
 
-    public int id() {
+    public String id() {
         return id;
     }
 
@@ -26,7 +26,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id &&
+        return Objects.equals(id, user.id) &&
             Objects.equals(name, user.name);
     }
 

@@ -25,17 +25,18 @@ public class AT_GetAndDeleteUsers {
 
     @Test
     public void return_200_and_user_found_for_specified_id() {
-        userRepository.add(new User(1, "Sam"));
+        User sam = new User("1", "Sam");
+        userRepository.add(sam);
 
-        get("/users/1").then()
+        get("/users/"+sam.id()).then()
                 .statusCode(200)
                 .contentType(APPLICATION_JSON)
-                .body("id", is(1))
+                .body("id", is("1"))
                 .body("name", is("Sam"));
     }
     @Test
     public void return_200_and_user_found_for_specified_name() {
-        User sandro = new User(4, "Sandro");
+        User sandro = new User("4", "Sandro");
         userRepository.add(sandro);
 
         get("/users/"+sandro.name())
@@ -55,11 +56,11 @@ public class AT_GetAndDeleteUsers {
     @Test
     public void return_200_and_all_users_id_and_names() {
         User[] users = {
-            new User(0, "Simion"),
-            new User(1, "Sam"),
-            new User(2, "Solange"),
-            new User(3, "Scott"),
-            new User(4, "Sandro")
+            new User("0", "Simion"),
+            new User("1", "Sam"),
+            new User("2", "Solange"),
+            new User("3", "Scott"),
+            new User("4", "Sandro")
         };
 
         for(User user: users)
@@ -77,7 +78,7 @@ public class AT_GetAndDeleteUsers {
     @Test
     public void
     return_201_and_add_a_user() {
-        String userToAdd = new UserJsonHelper().toJsonObject(new User(17, "Alex")).toString();
+        String userToAdd = new UserJsonHelper().toJsonObject(new User("17", "Alex")).toString();
 
         given()
             .contentType(APPLICATION_JSON)
@@ -93,7 +94,7 @@ public class AT_GetAndDeleteUsers {
     @Test
     public void
     return_200_and_delete_a_user() {
-        String userToDelete = new UserJsonHelper().toJsonObject(new User(26, "Erik")).toString();
+        String userToDelete = new UserJsonHelper().toJsonObject(new User("26", "Erik")).toString();
 
         given()
             .contentType(APPLICATION_JSON)

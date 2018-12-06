@@ -29,20 +29,20 @@ public class UserController {
 
     public String addUser(Request req, Response res) {
         JsonObject userJson = JsonObject.readFrom(req.body());
-        final int userId = userJson.get("id").asInt();
-        final String userName = userJson.get("name").asString();
+        String id = userJson.get("id").asString();
+        String name = userJson.get("name").asString();
 
-        userRepository.add(new User(userId, userName));
+        userRepository.add(new User(id, name));
 
         res.status(201);
         res.type(APPLICATION_JSON);
-        return new JsonObject().add("uri", "/users/"+userId).toString();
+        return new JsonObject().add("uri", "/users/"+id).toString();
     }
 
     public String deleteUserById(Request req, Response res) {
         JsonObject userJson = JsonObject.readFrom(req.body());
 
-        int userId = userJson.get("id").asInt();
+        String userId = userJson.get("id").asString();
         String userName = userJson.get("name").asString();
 
         User user = new User(userId, userName);
@@ -53,23 +53,12 @@ public class UserController {
         return new JsonObject().add("uri","/users/"+userId).toString();
     }
 
-    private  boolean isNumeric(String str)
-    {
-        try {
-            Integer.parseInt(str);
-        }
-        catch(NumberFormatException nfe) {
-            return false;
-        }
-        return true;
-    }
-
     public String getBy(Request req, Response res) {
         String params = req.params(":params");
 
         Optional<User>
             user = (isNumeric(params))
-                 ? userRepository.getById(Integer.parseInt(params))
+                 ? userRepository.getById(params)
                  : userRepository.getByName(params);
 
         return user
@@ -85,6 +74,17 @@ public class UserController {
     private String userJson(Response res, User userFound) {
         res.type(APPLICATION_JSON);
         return userJsonHelper.toJsonObject(userFound).toString();
+    }
+
+    private  boolean isNumeric(String str)
+    {
+        try {
+            Integer.parseInt(str);
+        }
+        catch(NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 
 }

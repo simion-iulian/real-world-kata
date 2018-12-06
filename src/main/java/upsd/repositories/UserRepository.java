@@ -19,8 +19,8 @@ public class UserRepository {
         users.add(userToAdd);
     }
 
-    public Optional<User> getById(int id) {
-        Predicate<User> byID = u -> id == u.id();
+    public Optional<User> getById(String id) {
+        Predicate<User> byID = u -> u.id().equals(id);
 
         return firstUser(byID);
     }
