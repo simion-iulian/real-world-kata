@@ -11,7 +11,12 @@ import java.util.List;
 import java.util.Optional;
 
 public class UserController {
-    private static final String APPLICATION_JSON = "application/json";
+    private static final String JSON = "application/json";
+
+    private static final int OK = 200;
+    private static final int CREATED = 201;
+    private static final int NOT_FOUND = 404;
+
     private final UserRepository userRepository;
     private final UserJsonHelper userJsonHelper = new UserJsonHelper();
 
@@ -22,59 +27,65 @@ public class UserController {
     public String getAll(Request req, Response res) {
         List<User> users = userRepository.getAll();
 
-        res.type(APPLICATION_JSON);
-        res.status(200);
+        res.type(JSON);
+        res.status(OK);
         return userJsonHelper.arrayFrom(users).toString();
     }
 
     public String addUser(Request req, Response res) {
+        User user = userFromJson(req);
+        userRepository.add(user);
+
+        res.type(JSON);
+        res.status(CREATED);
+
+        JsonObject responseJson = new JsonObject().add("uri", "/users/" + user.id());
+        return responseJson.toString();
+    }
+
+    private User userFromJson(Request req){
         JsonObject json = JsonObject.readFrom(req.body());
 
         String id = json.get("id").asString();
         String name = json.get("name").asString();
 
-        userRepository.add(new User(id, name));
-
-        res.type(APPLICATION_JSON);
-        res.status(201);
-
-        JsonObject responseJson = new JsonObject().add("uri", "/users/" + id);
-        return responseJson.toString();
+        return new User(id,name);
     }
 
     public String deleteUserById(Request req, Response res) {
-        JsonObject userJson = JsonObject.readFrom(req.body());
+        User user = userFromJson(req);
 
-        String userId = userJson.get("id").asString();
-        String userName = userJson.get("name").asString();
+        userRepository.delete(user);
 
-        userRepository.delete(new User(userId, userName));
-
-        res.type(APPLICATION_JSON);
-        res.status(200);
-        return new JsonObject().add("uri","/users/"+userId).toString();
+        res.type(JSON);
+        res.status(OK);
+        JsonObject responseJson = new JsonObject().add("uri", "/users/" + user.id());
+        return responseJson.toString();
     }
 
     public String getBy(Request req, Response res) {
         String params = req.params(":params");
 
-        Optional<User>
-            user = (isNumeric(params))
-                 ? userRepository.getById(params)
-                 : userRepository.getByName(params);
+        Optional<User> user = userByIdOrName(params);
 
         return user
             .map(u -> userJson(res, u))
             .orElseGet(() -> emptyWith404(res));
     }
 
+    private Optional<User> userByIdOrName(String params) {
+        return (isNumeric(params))
+             ? userRepository.getById(params)
+             : userRepository.getByName(params);
+    }
+
     private String emptyWith404(Response res) {
-        res.status(404);
+        res.status(NOT_FOUND);
         return "";
     }
 
     private String userJson(Response res, User userFound) {
-        res.type(APPLICATION_JSON);
+        res.type(JSON);
         return userJsonHelper.toJsonObject(userFound).toString();
     }
 
