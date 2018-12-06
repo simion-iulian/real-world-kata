@@ -4,7 +4,7 @@ import com.eclipsesource.json.JsonObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import upsd.api.Server;
-import upsd.controllers.UserJsonHelper;
+import upsd.json.UserJsonHelper;
 import upsd.domain.User;
 import upsd.repositories.UserRepository;
 
@@ -13,8 +13,9 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 
-public class AT_GetUserById {
+public class AT_GetAndDeleteUsers {
     private static UserRepository userRepository;
+    private final String APPLICATION_JSON = "application/json";
 
     @BeforeClass
     public static void setUp() {
@@ -28,9 +29,21 @@ public class AT_GetUserById {
 
         get("/users/1").then()
                 .statusCode(200)
-                .contentType("application/json")
+                .contentType(APPLICATION_JSON)
                 .body("id", is(1))
                 .body("name", is("Sam"));
+    }
+    @Test
+    public void return_200_and_user_found_for_specified_name() {
+        User sandro = new User(4, "Sandro");
+        userRepository.add(sandro);
+
+        get("/users/name/"+sandro.name())
+            .then()
+                .statusCode(200)
+                .contentType(APPLICATION_JSON)
+                .body("id", is(sandro.id()))
+                .body("name", is(sandro.name()));
     }
 
     @Test
@@ -64,32 +77,32 @@ public class AT_GetUserById {
     @Test
     public void
     return_201_and_add_a_user() {
-        String userToAdd = new UserJsonHelper().objectFor(new User(17, "Alex")).toString();
+        String userToAdd = new UserJsonHelper().toJsonObject(new User(17, "Alex")).toString();
 
         given()
-            .contentType("application/json")
+            .contentType(APPLICATION_JSON)
             .body(userToAdd)
         .when()
             .post("/users")
         .then()
             .statusCode(201)
-            .contentType("application/json")
+            .contentType(APPLICATION_JSON)
             .body("uri", equalTo("/users/17"));
     }
 
     @Test
     public void
     return_200_and_delete_a_user() {
-        String userToDelete = new UserJsonHelper().objectFor(new User(26, "Erik")).toString();
+        String userToDelete = new UserJsonHelper().toJsonObject(new User(26, "Erik")).toString();
 
         given()
-            .contentType("application/json")
+            .contentType(APPLICATION_JSON)
             .body(userToDelete)
         .when()
         .delete("/users")
         .then()
             .statusCode(200)
-            .contentType("application/json")
+            .contentType(APPLICATION_JSON)
             .body("uri", equalTo("/users/26"));
 
     }

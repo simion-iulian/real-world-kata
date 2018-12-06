@@ -1,6 +1,7 @@
 package upsd.controllers;
 
 import com.eclipsesource.json.JsonObject;
+import upsd.json.UserJsonHelper;
 import org.junit.Before;
 import org.junit.Test;
 import spark.Request;
@@ -37,7 +38,7 @@ public class UserControllerShould {
     public void
     return_404_response_type_when_user_not_found() {
         given(request.params(":id")).willReturn("12");
-        given(userRepository.getBy(12)).willReturn(Optional.empty());
+        given(userRepository.getById(12)).willReturn(Optional.empty());
 
         String actual = userController.getById(request, this.response);
 
@@ -76,9 +77,20 @@ public class UserControllerShould {
     @Test
     public void return_user_for_supplied_id() {
         given(request.params(":id")).willReturn("1");
-        given(userRepository.getBy(1)).willReturn(Optional.of(USER));
+        given(userRepository.getById(1)).willReturn(Optional.of(USER));
 
         String actual = userController.getById(request, this.response);
+
+        verify(response).type("application/json");
+        assertThat(actual, is(jsonStringFor(USER)));
+    }
+    @Test
+    public void return_user_for_supplied_name() {
+        given(request.params(":name")).willReturn(USER.name());
+
+        given(userRepository.getByName(USER.name())).willReturn(Optional.of(USER));
+
+        String actual = userController.getByName(request, this.response);
 
         verify(response).type("application/json");
         assertThat(actual, is(jsonStringFor(USER)));
@@ -90,14 +102,14 @@ public class UserControllerShould {
         User user =new User(12, "Elliott");
 
         given(request.body()).willReturn(jsonStringFor(user));
-        given(userRepository.getBy(12)).willReturn(Optional.of(user));
+        given(userRepository.getById(12)).willReturn(Optional.of(user));
 
         userController.addUser(request, response);
 
         verify(response).status(201);
         verify(userRepository).add(user);
 
-        Optional<User> actual = userRepository.getBy(12);
+        Optional<User> actual = userRepository.getById(12);
         assertThat(actual, is(Optional.of(user)));
     }
 
@@ -107,16 +119,15 @@ public class UserControllerShould {
         int lukeId = 35;
         User luke = new User(lukeId, "Luke");
 
-
         given(request.body()).willReturn(jsonStringFor(luke));
-        given(userRepository.getBy(lukeId)).willReturn(Optional.empty());
+        given(userRepository.getById(lukeId)).willReturn(Optional.empty());
 
-        userController.deleteUser(request,response);
+        userController.deleteUserById(request,response);
 
         verify(response).status(200);
         verify(userRepository).delete(luke);
 
-        Optional<User> actual = userRepository.getBy(lukeId);
+        Optional<User> actual = userRepository.getById(lukeId);
         assertThat(actual, is (Optional.empty()));
     }
 }

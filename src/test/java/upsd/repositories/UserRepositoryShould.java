@@ -13,14 +13,23 @@ import static org.junit.Assert.assertThat;
 public class UserRepositoryShould {
 
     @Test
-    public void retrieve_added_user() {
+    public void retrieve_added_user_given_id() {
         UserRepository userRepository = new UserRepository();
         User user = new User(1, "new user");
         userRepository.add(user);
 
+        User userFound = userRepository.getById(1).get();
 
-        User userFound = userRepository.getBy(1).get();
+        assertThat(userFound, is(user));
+    }
 
+    @Test
+    public void retrieve_added_user_given_name() {
+        UserRepository userRepository = new UserRepository();
+        User user = new User(1, "new user");
+        userRepository.add(user);
+
+        User userFound = userRepository.getByName(user.name()).get();
 
         assertThat(userFound, is(user));
     }
@@ -56,7 +65,7 @@ public class UserRepositoryShould {
         userRepository.add(user);
         userRepository.delete(user);
 
-        Optional<User> userFound = userRepository.getBy(id);
+        Optional<User> userFound = userRepository.getById(id);
         assertThat(userFound, is(Optional.empty()));
     }
 }

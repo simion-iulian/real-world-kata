@@ -5,6 +5,7 @@ import upsd.domain.User;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class UserRepository {
 
@@ -18,10 +19,10 @@ public class UserRepository {
         users.add(userToAdd);
     }
 
-    public Optional<User> getBy(int id) {
-        return users.stream()
-                .filter(u -> u.id() == id)
-                .findFirst();
+    public Optional<User> getById(int id) {
+        Predicate<User> byID = u -> id == u.id();
+
+        return firstUser(byID);
     }
 
     public List<User> getAll() {
@@ -30,5 +31,16 @@ public class UserRepository {
 
     public void delete(User user) {
         users.remove(user);
+    }
+
+    public Optional<User> getByName(String name) {
+        Predicate<User> byName = u -> name.equals(u.name());
+        return firstUser(byName);
+    }
+
+    private Optional<User> firstUser(Predicate<User> byName) {
+        return users.stream()
+            .filter(byName)
+            .findFirst();
     }
 }
