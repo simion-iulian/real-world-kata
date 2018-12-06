@@ -2,7 +2,6 @@ package upsd.repositories;
 
 import org.junit.Test;
 import upsd.domain.User;
-import upsd.helpers.json.JsonHelper;
 
 import java.util.Arrays;
 import java.util.List;

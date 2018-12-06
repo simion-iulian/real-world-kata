@@ -6,7 +6,6 @@ import org.junit.Test;
 import spark.Request;
 import spark.Response;
 import upsd.domain.User;
-import upsd.helpers.json.JsonHelper;
 import upsd.repositories.UserRepository;
 
 import java.util.Arrays;
@@ -64,7 +63,7 @@ public class UserControllerShould {
             new User(4, "Sandro")
         };
 
-        String jsonForAllUsers = JsonHelper.arrayOfUsers(users).toString();
+        String jsonForAllUsers = new UserJsonHelper().arrayFrom(Arrays.asList(users)).toString();
 
         given(userRepository.getAll()).willReturn(Arrays.asList(users));
 

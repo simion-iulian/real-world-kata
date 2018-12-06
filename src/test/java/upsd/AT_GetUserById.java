@@ -1,23 +1,19 @@
 package upsd;
 
 import com.eclipsesource.json.JsonObject;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import upsd.api.Server;
+import upsd.controllers.UserJsonHelper;
 import upsd.domain.User;
-import upsd.helpers.json.JsonHelper;
 import upsd.repositories.UserRepository;
 
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.hasItems;
-import static upsd.helpers.json.JsonHelper.arrayOfUsers;
 
 public class AT_GetUserById {
-
     private static UserRepository userRepository;
 
     @BeforeClass
@@ -25,7 +21,6 @@ public class AT_GetUserById {
         userRepository = new UserRepository();
         new Server(userRepository).startOn(8080);
     }
-
 
     @Test
     public void return_200_and_user_found_for_specified_id() {
@@ -47,8 +42,8 @@ public class AT_GetUserById {
     @Test
     public void return_200_and_all_users_id_and_names() {
         User[] users = {
-            new User(1, "Sam"),
             new User(0, "Simion"),
+            new User(1, "Sam"),
             new User(2, "Solange"),
             new User(3, "Scott"),
             new User(4, "Sandro")
@@ -57,20 +52,19 @@ public class AT_GetUserById {
         for(User user: users)
             userRepository.add(user);
 
-        JsonObject arrayOfUsers = arrayOfUsers(users);
+        JsonObject arrayOfUsers = new UserJsonHelper().arrayFrom(userRepository.getAll());
 
-        System.out.println(arrayOfUsers.toString());
 
         get("/users").
             then().
             statusCode(200).
-            body(is(arrayOfUsers.toString()));
+            body(equalTo(arrayOfUsers.toString()));
     }
 
     @Test
     public void
     return_201_and_add_a_user() {
-        String jsonBody = JsonHelper.jsonObjectFor(new User(17, "Alex")).toString();
+        String jsonBody = new UserJsonHelper().objectFor(new User(17, "Alex")).toString();
 
         given()
             .contentType("application/json")
