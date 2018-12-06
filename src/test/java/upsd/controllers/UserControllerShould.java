@@ -107,8 +107,9 @@ public class UserControllerShould {
         int lukeId = 35;
         User luke = new User(lukeId, "Luke");
 
+
         given(request.body()).willReturn(jsonStringFor(luke));
-        given(userRepository.getBy(lukeId)).willReturn(Optional.of(luke));
+        given(userRepository.getBy(lukeId)).willReturn(Optional.empty());
 
         userController.deleteUser(request,response);
 
