@@ -105,6 +105,5 @@ public class AT_GetAndDeleteUsers {
             .statusCode(200)
             .contentType(APPLICATION_JSON)
             .body("uri", equalTo("/users/26"));
-
     }
 }
