@@ -22,21 +22,24 @@ public class UserController {
     public String getAll(Request req, Response res) {
         List<User> users = userRepository.getAll();
 
-        res.status(200);
         res.type(APPLICATION_JSON);
+        res.status(200);
         return userJsonHelper.arrayFrom(users).toString();
     }
 
     public String addUser(Request req, Response res) {
-        JsonObject userJson = JsonObject.readFrom(req.body());
-        String id = userJson.get("id").asString();
-        String name = userJson.get("name").asString();
+        JsonObject json = JsonObject.readFrom(req.body());
+
+        String id = json.get("id").asString();
+        String name = json.get("name").asString();
 
         userRepository.add(new User(id, name));
 
-        res.status(201);
         res.type(APPLICATION_JSON);
-        return new JsonObject().add("uri", "/users/"+id).toString();
+        res.status(201);
+
+        JsonObject responseJson = new JsonObject().add("uri", "/users/" + id);
+        return responseJson.toString();
     }
 
     public String deleteUserById(Request req, Response res) {
@@ -45,8 +48,7 @@ public class UserController {
         String userId = userJson.get("id").asString();
         String userName = userJson.get("name").asString();
 
-        User user = new User(userId, userName);
-        userRepository.delete(user);
+        userRepository.delete(new User(userId, userName));
 
         res.type(APPLICATION_JSON);
         res.status(200);
@@ -86,5 +88,4 @@ public class UserController {
         }
         return true;
     }
-
 }
