@@ -36,8 +36,9 @@ public class UserController {
 
 
     public String getAll(Request req, Response res) {
-        res.status(200);
         List<User> users = userRepository.getAll();
+
+        res.status(200);
         res.type(APPLICATION_JSON);
         return userJsonHelper.arrayFrom(users).toString();
     }
@@ -47,15 +48,25 @@ public class UserController {
         final int userId = userJson.get("id").asInt();
         final String userName = userJson.get("name").asString();
 
-        final User user = new User(userId, userName);
-        System.out.println(req.body());
+        userRepository.add(new User(userId, userName));
+
         res.status(201);
         res.type(APPLICATION_JSON);
-        userRepository.add(user);
         return new JsonObject().add("uri", "/users/"+userId).toString();
     }
 
     public String deleteUser(Request req, Response res) {
-        throw new UnsupportedOperationException();
+        JsonObject userJson = JsonObject.readFrom(req.body());
+
+        final int userId = userJson.get("id").asInt();
+        final String userName = userJson.get("name").asString();
+
+        final User user = new User(userId, userName);
+
+        userRepository.delete(user);
+
+        res.type(APPLICATION_JSON);
+        res.status(200);
+        return new JsonObject().add("uri","/users/"+userId).toString();
     }
 }
