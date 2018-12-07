@@ -8,6 +8,8 @@ import upsd.json.UserJsonHelper;
 import upsd.domain.User;
 import upsd.repositories.UserRepository;
 
+import java.util.List;
+
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -35,16 +37,21 @@ public class AT_GetAndDeleteUsers {
                 .body("name", is("Sam"));
     }
     @Test
-    public void return_200_and_user_found_for_specified_name() {
+    public void return_200_and_all_users_found_for_specified_name() {
         User sandro = new User("4", "Sandro");
+        User sandro2 = new User("14", "Sandro");
         userRepository.add(sandro);
+        userRepository.add(sandro2);
 
-        get("/users/"+sandro.name())
+        List<User> allUsersNamed = userRepository.getAllByName(sandro.name());
+
+        JsonObject arrayOfUsers = new UserJsonHelper().arrayFrom(allUsersNamed);
+
+        get("/users?name="+sandro.name())
             .then()
                 .statusCode(200)
                 .contentType(APPLICATION_JSON)
-                .body("id", is(sandro.id()))
-                .body("name", is(sandro.name()));
+                .body(equalTo(arrayOfUsers.toString()));
     }
 
     @Test

@@ -10,6 +10,7 @@ import upsd.domain.User;
 import upsd.repositories.UserRepository;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -24,6 +25,9 @@ public class UserControllerShould {
     private Response response;
     private UserController userController;
     private final User USER = new User("1", "bob");
+    private final User USER2 = new User("2", "bob");
+    private final User USER3 = new User("3", "bob");
+
     private UserRepository userRepository;
 
     @Before
@@ -40,7 +44,7 @@ public class UserControllerShould {
         given(request.params(":params")).willReturn("12");
         given(userRepository.getById("12")).willReturn(Optional.empty());
 
-        String actual = userController.getBy(request, this.response);
+        String actual = userController.getByName(request, this.response);
 
         verify(response).status(404);
         assertThat(actual, is(""));
@@ -76,25 +80,29 @@ public class UserControllerShould {
 
     @Test
     public void return_user_for_supplied_id() {
-        given(request.params(":params")).willReturn("1");
+        given(request.params(":id")).willReturn("1");
         given(userRepository.getById("1")).willReturn(Optional.of(USER));
 
-        String actual = userController.getBy(request, this.response);
+        String actual = userController.getById(request, this.response);
 
         verify(response).type("application/json");
 
         assertThat(actual, is(jsonStringFor(USER)));
     }
     @Test
-    public void return_user_for_supplied_name() {
-        given(request.params(":params")).willReturn(USER.name());
+    public void return_users_for_supplied_name() {
+        given(request.params(":name")).willReturn(USER.name());
 
-        given(userRepository.getByName(USER.name())).willReturn(Optional.of(USER));
+        List<User> userByNameList = Arrays.asList(USER,USER2,USER3);
 
-        String actual = userController.getBy(request, this.response);
+        given(userRepository.getAllByName(USER.name())).willReturn(userByNameList);
+
+        String actual = userController.getAll(request, this.response);
 
         verify(response).type("application/json");
-        assertThat(actual, is(jsonStringFor(USER)));
+        String jsonForAllUsers = new UserJsonHelper().arrayFrom(userByNameList).toString();
+
+        assertThat(actual, is(jsonForAllUsers));
     }
 
     @Test

@@ -25,7 +25,14 @@ public class UserController {
     }
 
     public String getAll(Request req, Response res) {
-        List<User> users = userRepository.getAll();
+        String name = req.params(":name");
+
+        List<User> users;
+
+        if(name == null)
+            users = userRepository.getAll();
+        else
+            users = userRepository.getAllByName(name);
 
         res.type(JSON);
         res.status(OK);
@@ -63,10 +70,20 @@ public class UserController {
         return responseJson.toString();
     }
 
-    public String getBy(Request req, Response res) {
-        String params = req.params(":params");
+    public String getByName(Request req, Response res) {
+        String name = req.params(":name");
 
-        Optional<User> user = userByIdOrName(params);
+        Optional<User> user = userByIdOrName(name);
+
+        return user
+            .map(u -> userJson(res, u))
+            .orElseGet(() -> emptyWith404(res));
+    }
+
+    public String getById(Request req, Response res) {
+        String id = req.params(":id");
+
+        Optional<User> user = userRepository.getById(id);
 
         return user
             .map(u -> userJson(res, u))

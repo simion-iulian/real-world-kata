@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class UserRepository {
     private List<User> users;
@@ -23,6 +24,15 @@ public class UserRepository {
     }
     public List<User> getAll() {
         return users;
+    }
+    public List<User> getAllByName(String name) {
+        List<User> list = new ArrayList<>();
+        for (User user : users) {
+            if (user.name().equals(name)) {
+                list.add(user);
+            }
+        }
+        return list;
     }
     public void add(User userToAdd) {
         users.add(userToAdd);
