@@ -91,7 +91,7 @@ public class UserControllerShould {
     }
     @Test
     public void return_users_for_supplied_name() {
-        given(request.params(":name")).willReturn(USER.name());
+        given(request.queryParams("name")).willReturn(USER.name());
 
         List<User> userByNameList = Arrays.asList(USER,USER2,USER3);
 

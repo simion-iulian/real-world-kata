@@ -10,6 +10,7 @@ public class App {
         UserRepository userRepository = new UserRepository();
         userRepository.add(new User("1","Sam"));
         userRepository.add(new User("2","Sandro"));
+        userRepository.add(new User("3","Sandro"));
         new Server(userRepository).startOn(3000);
     }
 }

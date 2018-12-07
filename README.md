@@ -24,7 +24,7 @@ Add the ability for a client to add a user via the API.
 ### Feature #4 - Delete a user
 Enable clients of the API to delete a user.
 
-### Feature #5 - Search for user by name
+### Feature #5 - Search for users by name
 Enable clients of the API to search for users using their name.
 
 ## Running the tests

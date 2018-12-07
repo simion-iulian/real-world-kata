@@ -25,8 +25,7 @@ public class UserController {
     }
 
     public String getAll(Request req, Response res) {
-        String name = req.params(":name");
-
+        String name = req.queryParams("name");
         List<User> users;
 
         if(name == null)
